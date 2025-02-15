@@ -1,0 +1,2 @@
+# Lavarropas
+Lavarropas, interfaz
