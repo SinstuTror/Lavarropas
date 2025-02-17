@@ -1,0 +1,254 @@
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+{
+    ui->setupUi(this);
+
+    setWindowTitle("Sistema de Lavado Inteligente");
+
+    // Configurar el QLabel para la imagen de fondo
+    backgroundLabel = new QLabel(this);
+    backgroundLabel->setPixmap(QPixmap("C:/Users/SinstuTror/Desktop/Interfaz/Interfaz Con Base/interfaz/logo.jpg")
+                                   .scaled(size(), Qt::KeepAspectRatio, Qt::SmoothTransformation));
+    backgroundLabel->setScaledContents(true);
+    backgroundLabel->lower();
+    backgroundLabel->setGeometry(0, 0, width(), height());
+
+    // Crear el widget central y el layout principal
+    QWidget *centralWidget = new QWidget(this);
+    QVBoxLayout *mainLayout = new QVBoxLayout();
+
+    // Configurar el título
+    QLabel *titleLabel = new QLabel("Sistema de Lavado Inteligente", this);
+    titleLabel->setStyleSheet(
+        "font-size: 24px; "
+        "font-weight: bold; "
+        "color: #333333; "
+        "background-color: transparent; "
+        "padding: 5px;");
+    titleLabel->setAlignment(Qt::AlignCenter);
+
+    // Layout superior con título
+    QVBoxLayout *headerLayout = new QVBoxLayout();
+    headerLayout->addWidget(titleLabel, 0, Qt::AlignTop | Qt::AlignCenter);
+
+    // Layout principal
+    mainLayout = new QVBoxLayout(this);
+    // Crear un nuevo layout horizontal para los botones
+    QHBoxLayout *buttonLayout = new QHBoxLayout();
+
+    // Personalizar estilos de los botones
+    ui->pushButton_LedGreen->setStyleSheet(
+        "QPushButton {"
+        "background-color: rgb(85, 170, 85);"
+        "color: white;"
+        "border-radius: 10px;"
+        "padding: 10px;"
+        "font-size: 16px;"
+        "border: 2px solid transparent;"
+        "font-weight: bold;"
+        "}"
+        "QPushButton:hover {"
+        "border: 2px solid rgb(85, 255, 85);"
+        "}"
+        );
+    ui->pushButton_LedRed->setStyleSheet(
+        "QPushButton {"
+        "background-color: rgb(255, 120, 0);"
+        "color: white;"
+        "border-radius: 10px;"
+        "padding: 10px;"
+        "font-size: 16px;"
+        "border: 2px solid transparent;"
+        "font-weight: bold;"
+        "}"
+        "QPushButton:hover {"
+        "border: 2px solid rgb(255, 180, 0);"
+        "}"
+        );
+    ui->pushButton_LedBlue->setStyleSheet(
+        "QPushButton {"
+        "background-color: rgb(50, 50, 200);"
+        "color: white;"
+        "border-radius: 10px;"
+        "padding: 10px;"
+        "font-size: 16px;"
+        "border: 2px solid transparent;"
+        "font-weight: bold;"
+        "}"
+        "QPushButton:hover {"
+        "border: 2px solid rgb(100, 100, 255);"
+        "}"
+        );
+
+    // Personalizar estilo del botón de parada de emergencia
+    ui->paradaButton->setStyleSheet(
+        "QPushButton {"
+        "background-color: rgb(255, 0, 0);"
+        "color: white;"
+        "border-radius: 5px;"
+        "padding: 20px;"
+        "font-size: 20px;"
+        "font-weight: bold;"
+        "border: 3px solid transparent;"
+        "}"
+        "QPushButton:hover {"
+        "background-color: rgb(255, 50, 50);"
+        "border: 3px solid rgb(255, 255, 0);"
+        "}"
+        "QPushButton:pressed {"
+        "background-color: rgb(200, 0, 0);"
+        "border: 3px solid rgb(255, 150, 150);"
+        "}"
+        );
+
+    // Agregar los botones al layout horizontal
+    buttonLayout->addWidget(ui->pushButton_LedGreen);
+    buttonLayout->addWidget(ui->pushButton_LedRed);
+    buttonLayout->addWidget(ui->pushButton_LedBlue);
+
+    // Crear un layout principal
+    QVBoxLayout *mainLayout = new QVBoxLayout();
+
+    // Agregar la etiqueta, botones y el botón de emergencia al layout
+    mainLayout->addStretch();
+    mainLayout->addLayout(buttonLayout);
+    mainLayout->addWidget(ui->paradaButton);
+    mainLayout->addStretch();
+
+    // Configurar el layout central
+    QWidget *centralWidget = new QWidget(this);
+    centralWidget->setLayout(mainLayout);
+    setCentralWidget(centralWidget);
+
+    // Crear un botón de ayuda
+    QPushButton *helpButton = new QPushButton("Ayuda", this);
+    helpButton->setStyleSheet(
+        "font-size: 16px; color: white; background-color: #0066CC; padding: 8px 15px; "
+        "border-radius: 10px; border: 2px solid #FFFFFF; font-family: 'Arial';"
+        );
+    helpButton->setIcon(QIcon(":/icons/help.png"));
+
+    // Conectar el botón de ayuda
+    connect(helpButton, &QPushButton::clicked, this, [this]() {
+        QWidget *helpWindow = new QWidget();
+        helpWindow->setWindowTitle("Ayuda - Sistema de Lavado");
+        helpWindow->setFixedSize(400, 300);
+
+        QVBoxLayout *layout = new QVBoxLayout(helpWindow);
+
+        QLabel *infoLabel = new QLabel("¿Necesitas ayuda?", helpWindow);
+        infoLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: black;");
+        infoLabel->setAlignment(Qt::AlignCenter);
+        layout->addWidget(infoLabel);
+
+        QLabel *detailsLabel = new QLabel(
+            "1. Asegúrate de que tu tarjeta RFID esté disponible.\n"
+            "2. Si tienes problemas, verifica la conexión del lector.\n"
+            "3. Para más información, contacta al soporte técnico.",
+            helpWindow);
+        detailsLabel->setStyleSheet("font-size: 14px; color: black;");
+        detailsLabel->setWordWrap(true);
+        layout->addWidget(detailsLabel);
+
+        // Botón para probar la conexión al lector
+        QPushButton *testConnectionButton = new QPushButton("Probar conexión al lector", helpWindow);
+        testConnectionButton->setStyleSheet(
+            "font-size: 14px; color: white; background-color: green; padding: 5px 10px; border-radius: 5px;"
+            );
+        layout->addWidget(testConnectionButton);
+
+        // Botón para cerrar la ventana de ayuda
+        QPushButton *closeButton = new QPushButton("Cerrar", helpWindow);
+        closeButton->setStyleSheet(
+            "font-size: 14px; color: white; background-color: red; padding: 5px 10px; border-radius: 5px;"
+            );
+        layout->addWidget(closeButton);
+
+        // Conectar el botón para cerrar la ventana
+        connect(closeButton, &QPushButton::clicked, helpWindow, &QWidget::close);
+
+        // Funcionalidad del botón de prueba de conexión
+        connect(testConnectionButton, &QPushButton::clicked, this, [this]() {
+            if (server.isListening()) {
+                QMessageBox::information(this, "Prueba de conexión", "El lector RFID está conectado correctamente.");
+            } else {
+                QMessageBox::critical(this, "Prueba de conexión", "El lector RFID no está conectado. Verifica los cables o la configuración.");
+            }
+        });
+
+        helpWindow->setLayout(layout);
+        helpWindow->show();
+    });
+
+    // Crear un espaciador vertical para separar el botón "Ayuda" del botón de parada de emergencia
+    QSpacerItem *verticalSpacer = new QSpacerItem(0, 20, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+    // Crear un layout inferior para posicionar el botón en la esquina inferior izquierda
+    QHBoxLayout *bottomLayout = new QHBoxLayout();
+    bottomLayout->setContentsMargins(0, 0, 0, 0); // Ajustar el margen izquierdo e inferior
+    bottomLayout->addWidget(helpButton);
+    bottomLayout->addStretch(); // Empujar el resto del contenido hacia la derecha
+
+    // Crear un contenedor para el layout inferior
+    QWidget *bottomWidget = new QWidget(this);
+    bottomWidget->setLayout(bottomLayout);
+
+    // Agregar el espaciador y el contenedor del botón "Ayuda" al layout principal
+    mainLayout->addItem(verticalSpacer); // Agregar el espaciador para separar los botones
+    mainLayout->addWidget(bottomWidget, 0, Qt::AlignBottom | Qt::AlignLeft);
+
+
+
+    // Configurar la etiqueta y el LED
+    statusLabel = new QLabel("En espera", this);
+    statusLabel->setStyleSheet("font-size: 20px; color: white;font-weight: bold;");
+    statusLabel->setAlignment(Qt::AlignCenter);
+
+    ledLabel = new QLabel(this);
+    ledLabel->setFixedSize(20, 20);
+    ledLabel->setStyleSheet(
+        "background-color: yellow; "
+        "border-radius: 20px; "
+        "border: 2px solid black;" // Agregar borde al LED
+        );
+
+    // Layout para la esquina superior derecha
+    QVBoxLayout *topRightLayout = new QVBoxLayout();
+    topRightLayout->addWidget(statusLabel, 0, Qt::AlignCenter);
+    topRightLayout->addWidget(ledLabel, 0, Qt::AlignCenter);
+    topRightLayout->addStretch();
+
+    // Crear un contenedor para posicionar el layout en la esquina superior derecha
+    QWidget *topRightWidget = new QWidget(this);
+    topRightWidget->setLayout(topRightLayout);
+
+    // Usar un QHBoxLayout para ubicar el topRightWidget en la parte superior
+    QHBoxLayout *headerLayout = new QHBoxLayout();
+    headerLayout->addStretch(); // Empujar los widgets a la derecha
+    headerLayout->addWidget(topRightWidget); // Agregar el LED y la etiqueta
+
+    // Agregar el layout superior al layout principal
+    mainLayout->insertLayout(0, headerLayout); // Insertar al inicio del layout principal
+
+    // Configurar temporizador para la intermitencia del LED
+    ledState = false;
+    ledTimer = new QTimer(this);
+    connect(ledTimer, &QTimer::timeout, this, [this]() {
+        if (ledState) {
+            ledLabel->setStyleSheet("background-color: yellow; border-radius: 10px; border: 2px solid black;");
+        } else {
+            ledLabel->setStyleSheet("background-color: transparent; border-radius: 10px; border: 2px solid black;");
+        }
+        ledState = !ledState; // Alternar estado
+    });
+    ledTimer->start(500); // Intermitencia cada 500ms
+
+
+    //==================================================================================================================
+    // Configurar el servidor TCP
+    server.listen(QHostAddress::Any, PORTsERVER);
+    // Conectar la señal de nueva conexión
+    connect(&server, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
+    //==================================================================================================================
+}
